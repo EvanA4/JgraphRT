@@ -1,4 +1,4 @@
-# C Ray Tracer
+# Jgraph Raytracer
 
 A minimalistic, multithreaded ray tracer written entirely in the C programming language. 
 
@@ -19,3 +19,7 @@ To render the sphere image as seen above, run the following command:
 ```
 bin/rayt sphere -w1920 -h1080 -x3 -y1 -z6 -t-1.3 -u-.2 -v-2 -m mysphere
 ```
+
+ffmpeg -f image2 -framerate 2 -i mp4ex/%d.png -vcodec libx264 -crf 22 video.mp4
+96 x 54
+./jgraph -P example.jgr | ps2pdf - > example.pdf
