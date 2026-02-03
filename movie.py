@@ -15,4 +15,4 @@ for k in range(NUM_STEPS):
         input_image = input_image.crop(box)
     images.append(input_image)
 
-images[0].save("video.gif", save_all=True, append_images=images[1:], optimize=False, duration=1000/NUM_STEPS, loop=0)
+images[0].save("video.gif", save_all=True, append_images=images[1:], optimize=False, duration=1000/60, loop=0)

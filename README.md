@@ -8,7 +8,7 @@ Here's a GIF travelling close to a black hole.
 ...and here's another panning the side of it.
 ![A Really Cool Black Hole Slide](https://github.com/EvanA4/JgraphRT/blob/main/silde.gif?raw=true)
 
-To create the binary executable for the C ray tracer, just run `make` while in this repository's root directory. Running `bin/rayt` will give you information on how to run the program:
+To create the binary executable for the C ray tracer, just run `make` while in this repository's root directory. The makefile will automatically compile a GIF similar to the piercing GIF. Running `bin/rayt` without arguments will give you information on how to run the program:
 
 ```
 Usage: bin/kerr [schwarz|sphere]
