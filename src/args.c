@@ -20,16 +20,16 @@ static void print_usage() {
         stderr,
         "Usage: bin/kerr [schwarz|sphere]\n"
         "Flags:\n"
-        "\ta/x: %30s\n"
-        "\tb/y: %30s\n"
-        "\tc/z: %30s\n"
-        "\tt:   %30s\n"
-        "\tu:   %30s\n"
-        "\tv:   %30s\n"
-        "\tf:   %30s\n"
-        "\tq:   %30s\n"
-        "\ts:   %30s\n"
-        "\tn:   %30s\n",
+        "\ta/x: %35s\n"
+        "\tb/y: %35s\n"
+        "\tc/z: %35s\n"
+        "\tt:   %35s\n"
+        "\tu:   %35s\n"
+        "\tv:   %35s\n"
+        "\tf:   %35s\n"
+        "\tq:   %35s\n"
+        "\ts:   %35s\n"
+        "\tn:   %35s\n",
         "x for start/ending pos of camera",
         "y for start/ending pos of camera",
         "z for start/ending pos of camera",
