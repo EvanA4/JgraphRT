@@ -7,19 +7,6 @@
 #include "args.h"
 
 
-/*
-x/t : x pos/dir of camera
-y/u : y pos/dir of camera
-z/v : z pos/dir of camera
-f : camera fov
-w : width of picture
-h : height of picture
-s : task size
-m : file name of image
-n : number of threads
-*/
-
-
 int free_args(KerrArgs *args) {
     if (!args) return 0;
     if (args->fileName) free(args->fileName);
@@ -40,8 +27,7 @@ static void print_usage() {
         "\tu:   %30s\n"
         "\tv:   %30s\n"
         "\tf:   %30s\n"
-        "\tw:   %30s\n"
-        "\th:   %30s\n"
+        "\tq:   %30s\n"
         "\ts:   %30s\n"
         "\tn:   %30s\n",
         "x for start/ending pos of camera",
@@ -51,8 +37,7 @@ static void print_usage() {
         "y for dir of camera",
         "z for dir of camera",
         "camera fov",
-        "width of picture",
-        "height of picture",
+        "number of steps in GIF",
         "task size",
         "number of threads"
     ); 
@@ -88,13 +73,14 @@ KerrArgs *parse_args(int argc, char **argv) {
         {1.1, .1, 8},
         {0, 0, 0},
         {0, 0, 1},
-        90,
-        512,
-        512,
-        2048,
-        NULL,
-        16,
-        ""
+        90,         // fov
+        30,         // num steps
+        96,         // width
+        54,         // height
+        2048,       // task size
+        NULL,       // file name
+        16,         // num threads
+        "schwarz"   // scene
     };
 
     // get the scene
@@ -112,7 +98,7 @@ KerrArgs *parse_args(int argc, char **argv) {
     }
 
     int opt;
-    while((opt = getopt(argc - 1, argv + 1, "a:b:c:x:t:y:u:z:v:f:w:h:s:n:")) != -1)  
+    while((opt = getopt(argc - 1, argv + 1, "a:b:c:x:t:y:u:z:v:f:s:n:")) != -1)  
     {  
         switch(opt)  
         {
@@ -196,17 +182,14 @@ KerrArgs *parse_args(int argc, char **argv) {
                 }
                 break;
 
-            case 'w':
-                if (sscanf(optarg, "%d", &(out->width)) != 1) {
-                    fprintf(stderr, "Error: failed to convert width to an integer\n");
+            case 'q':
+                if (sscanf(optarg, "%d", &(out->num_steps)) != 1) {
+                    fprintf(stderr, "Error: failed to convert number of steps to an integer\n");
                     free_args(out);
                     return NULL;
                 }
-                break;
-
-            case 'h':
-                if (sscanf(optarg, "%d", &(out->height)) != 1) {
-                    fprintf(stderr, "Error: failed to convert height to an integer\n");
+                if (out->num_steps >= 0) {
+                    fprintf(stderr, "Error: invalid number of steps\n");
                     free_args(out);
                     return NULL;
                 }

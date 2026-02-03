@@ -12,7 +12,7 @@ typedef struct Pixel {
 
 FILE *jgr_open(const char *fileName);
 void jgr_close(FILE *img);
-int jgr_write(FILE *img, const Pixel *buf, int numPx, int startPx, int width, int height);
+int jgr_write(FILE *img, const Pixel *buf, int numPx, int startPx, int width);
 
 
 #endif

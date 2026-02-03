@@ -20,6 +20,7 @@ typedef struct KerrArgs {
     float pos[3];
     float dir[3];
     float fov;
+    int num_steps;
     int width;
     int height;
     int taskSize;

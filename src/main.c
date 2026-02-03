@@ -4,6 +4,7 @@
 #include <pthread.h>
 #include "args.h"
 #include "tpool.h"
+#include <sys/stat.h>
 #include "tga.h"
 
 
@@ -11,7 +12,12 @@ int main(int argc, char **argv) {
     struct KerrArgs *args = parse_args(argc, argv);
     if (!args) return 1;
 
-    const int NUM_STEPS = 60;
+    struct stat st;
+    if (stat("data", &st) == -1) {
+        mkdir("data", 0700);
+    }
+
+    const int NUM_STEPS = args->num_steps;
     float steps[3] = {
         (args->pos1[0] - args->pos0[0]) / (NUM_STEPS - 1),
         (args->pos1[1] - args->pos0[1]) / (NUM_STEPS - 1),

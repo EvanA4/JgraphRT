@@ -16,7 +16,7 @@ void jgr_close(FILE *img) {
 }
 
 
-int jgr_write(FILE *img, const Pixel *buf, int numPx, int startPx, int width, int height) {
+int jgr_write(FILE *img, const Pixel *buf, int numPx, int startPx, int width) {
     // newline poly pcfill 255 255 255 pts 0 0  1 0  1 1  0 1 color 255 255 255
     int written = 0;
     for (int i = 0; i < numPx; ++i) {

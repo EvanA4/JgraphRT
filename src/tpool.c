@@ -129,8 +129,7 @@ static void tpool_flush(TPool *pool) {
                 pool->workers[i].result->buf, 
                 pool->workers[i].result->len, 
                 startPx, 
-                pool->rptr->width, 
-                pool->rptr->height
+                pool->rptr->width
             );
             pool->written += pool->workers[i].result->len;
             free(pool->workers[i].result->buf);
