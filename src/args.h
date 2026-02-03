@@ -15,6 +15,8 @@ n : number of threads
 
 
 typedef struct KerrArgs {
+    float pos0[3];
+    float pos1[3];
     float pos[3];
     float dir[3];
     float fov;

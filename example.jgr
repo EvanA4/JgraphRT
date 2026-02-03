@@ -1,8 +1,0 @@
-newgraph 
-xaxis nodraw
-yaxis nodraw
-
-newline poly pcfill 0 255 0 pts 0 0  1 0  1 1  0 1 color 0 255 0
-newline poly pcfill 255 0 0 pts 0 1  1 1  1 2  0 2 color 255 0 0
-newline poly pcfill 255 255 0 pts 1 1  2 1  2 2  1 2 color 255 255 0
-newline poly pcfill 0 255 255 pts 1 0  2 0  2 1  1 1 color 0 255 255

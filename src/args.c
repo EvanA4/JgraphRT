@@ -33,23 +33,27 @@ static void print_usage() {
         stderr,
         "Usage: bin/kerr [schwarz|sphere]\n"
         "Flags:\n"
-        "\tx/t: %30s\n"
-        "\ty/u: %30s\n"
-        "\tz/v: %30s\n"
+        "\ta/x: %30s\n"
+        "\tb/y: %30s\n"
+        "\tc/z: %30s\n"
+        "\tt:   %30s\n"
+        "\tu:   %30s\n"
+        "\tv:   %30s\n"
         "\tf:   %30s\n"
         "\tw:   %30s\n"
         "\th:   %30s\n"
         "\ts:   %30s\n"
-        "\tm:   %30s\n"
         "\tn:   %30s\n",
-        "x pos/dir of camera",
-        "y pos/dir of camera",
-        "z pos/dir of camera",
+        "x for start/ending pos of camera",
+        "y for start/ending pos of camera",
+        "z for start/ending pos of camera",
+        "x for dir of camera",
+        "y for dir of camera",
+        "z for dir of camera",
         "camera fov",
         "width of picture",
         "height of picture",
         "task size",
-        "file name of image",
         "number of threads"
     ); 
 }
@@ -57,20 +61,20 @@ static void print_usage() {
 
 static void print_args(KerrArgs *args) {
     printf(
-        "Position: {%.2f, %.2f, %.2f}\n"
+        "Start Position: {%.2f, %.2f, %.2f}\n"
+        "End Position: {%.2f, %.2f, %.2f}\n"
         "Direction: {%.2f, %.2f, %.2f}\n"
         "FOV: %.2f\n"
         "Image Size: %d x %d\n"
         "Pixels per Task: %d\n"
-        "File Name: \"%s\"\n"
         "Number of Threads: %d\n"
         "Scene: %s\n",
-        args->pos[0], args->pos[1], args->pos[2],
+        args->pos0[0], args->pos0[1], args->pos0[2],
+        args->pos1[0], args->pos1[1], args->pos1[2],
         args->dir[0], args->dir[1], args->dir[2],
         args->fov,
         args->width, args->height,
         args->taskSize,
-        args->fileName,
         args->numThreads,
         args->scene
     );
@@ -80,15 +84,17 @@ static void print_args(KerrArgs *args) {
 KerrArgs *parse_args(int argc, char **argv) {
     KerrArgs *out = malloc(sizeof(KerrArgs));
     *out = (KerrArgs) {
-        {-2, 2, -10},
-        {0.19, -0.19, 0.96},
+        {1.1, .1, -8},
+        {1.1, .1, 8},
+        {0, 0, 0},
+        {0, 0, 1},
         90,
         512,
         512,
         2048,
         NULL,
         16,
-        "schwarz"
+        ""
     };
 
     // get the scene
@@ -106,13 +112,53 @@ KerrArgs *parse_args(int argc, char **argv) {
     }
 
     int opt;
-    while((opt = getopt(argc - 1, argv + 1, "x:t:y:u:z:v:f:w:h:s:m:n:")) != -1)  
+    while((opt = getopt(argc - 1, argv + 1, "a:b:c:x:t:y:u:z:v:f:w:h:s:n:")) != -1)  
     {  
         switch(opt)  
         {
-            case 'x':
-                if (sscanf(optarg, "%f", &(out->pos[0])) != 1) {
+            case 'a':
+                if (sscanf(optarg, "%f", &(out->pos0[0])) != 1) {
                     fprintf(stderr, "Error: failed to convert x position to a float\n");
+                    free_args(out);
+                    return NULL;
+                }
+                break;
+
+            case 'b':
+                if (sscanf(optarg, "%f", &(out->pos0[1])) != 1) {
+                    fprintf(stderr, "Error: failed to convert y position to a float\n");
+                    free_args(out);
+                    return NULL;
+                }
+                break;
+
+            case 'c':
+                if (sscanf(optarg, "%f", &(out->pos0[2])) != 1) {
+                    fprintf(stderr, "Error: failed to convert z position to a float\n");
+                    free_args(out);
+                    return NULL;
+                }
+                break;
+
+            case 'x':
+                if (sscanf(optarg, "%f", &(out->pos1[0])) != 1) {
+                    fprintf(stderr, "Error: failed to convert x position to a float\n");
+                    free_args(out);
+                    return NULL;
+                }
+                break;
+
+            case 'y':
+                if (sscanf(optarg, "%f", &(out->pos1[1])) != 1) {
+                    fprintf(stderr, "Error: failed to convert y position to a float\n");
+                    free_args(out);
+                    return NULL;
+                }
+                break;
+
+            case 'z':
+                if (sscanf(optarg, "%f", &(out->pos1[2])) != 1) {
+                    fprintf(stderr, "Error: failed to convert z position to a float\n");
                     free_args(out);
                     return NULL;
                 }
@@ -126,25 +172,9 @@ KerrArgs *parse_args(int argc, char **argv) {
                 }
                 break;
             
-            case 'y':
-                if (sscanf(optarg, "%f", &(out->pos[1])) != 1) {
-                    fprintf(stderr, "Error: failed to convert y position to a float\n");
-                    free_args(out);
-                    return NULL;
-                }
-                break;
-            
             case 'u':
                 if (sscanf(optarg, "%f", &(out->dir[1])) != 1) {
                     fprintf(stderr, "Error: failed to convert y direction to a float\n");
-                    free_args(out);
-                    return NULL;
-                }
-                break;
-
-            case 'z':
-                if (sscanf(optarg, "%f", &(out->pos[2])) != 1) {
-                    fprintf(stderr, "Error: failed to convert z position to a float\n");
                     free_args(out);
                     return NULL;
                 }
@@ -190,12 +220,6 @@ KerrArgs *parse_args(int argc, char **argv) {
                 }
                 break;
 
-            case 'm':
-                int argLen = (int) strlen(optarg);
-                out->fileName = malloc((argLen + 5) * sizeof(char));
-                sprintf(out->fileName, "%s.tga", optarg);
-                break;
-
             case 'n':  
                 if (sscanf(optarg, "%d", &(out->numThreads)) != 1) {
                     fprintf(stderr, "Error: failed to convert number of threads to an integer\n");
@@ -209,12 +233,6 @@ KerrArgs *parse_args(int argc, char **argv) {
                 free_args(out);
                 return NULL;
         }  
-    }
-
-    if (!out->fileName) {
-        out->fileName = malloc(64 * sizeof(char));
-        time_t seconds = time(NULL);
-        strftime(out->fileName, 64, "%m-%d-%Y.tga", localtime(&seconds));
     }
 
     // normalize direction vector

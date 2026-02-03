@@ -23,3 +23,7 @@ bin/rayt sphere -w1920 -h1080 -x3 -y1 -z6 -t-1.3 -u-.2 -v-2 -m mysphere
 ffmpeg -f image2 -framerate 2 -i mp4ex/%d.png -vcodec libx264 -crf 22 video.mp4
 96 x 54
 ./jgraph -P example.jgr | ps2pdf - > example.pdf
+./jgraph -P myschwarz.jgr | ps2pdf - > example.pdf
+./jgraph -P myschwarz.jgr | ps2pdf - | convert -density 300 - -quality 100 example.png
+bin/rayt schwarz -w96 -h54 -x3 -y1 -z6 -t-1.3 -u-.2 -v-2 -m myschwarz
+ffmpeg -i myschwarz.tga myschwarz.png

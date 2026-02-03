@@ -35,6 +35,7 @@ typedef struct TPool {
     int capacity;
     bool die;
     int taskSize;
+    int written;
 
     pthread_mutex_t mutex;
     pthread_cond_t start;
@@ -122,7 +123,16 @@ static void tpool_flush(TPool *pool) {
     for (int i = 0; i < pool->size; ++i) {
         if (pool->workers[i].result) {
             // printf("writing %d pixels at %d\n", pool->workers[i].result->len, pool->workers[i].startPx);
-            tga_write(pool->fptr, pool->workers[i].result->buf, pool->workers[i].result->len);
+            int startPx = (pool->rptr->width * pool->rptr->height) - (1 + pool->written);
+            jgr_write(
+                pool->fptr,
+                pool->workers[i].result->buf, 
+                pool->workers[i].result->len, 
+                startPx, 
+                pool->rptr->width, 
+                pool->rptr->height
+            );
+            pool->written += pool->workers[i].result->len;
             free(pool->workers[i].result->buf);
             free(pool->workers[i].result);
             pool->workers[i].result = NULL;
@@ -138,12 +148,13 @@ static void tpool_flush(TPool *pool) {
 TPool *tpool_init(KerrArgs *args) {
     TPool *pool = malloc(sizeof(TPool));
     pool->die = 0;
-    pool->fptr = tga_open(args->width, args->height, args->fileName);
+    pool->fptr = jgr_open(args->fileName);
     pool->rptr = render_init(args);
     pool->taskSize = args->taskSize;
     pool->size = args->numThreads;
     pool->capacity = 0;
     pool->workers = malloc(args->numThreads * sizeof(Worker));
+    pool->written = 0;
 
     pthread_mutex_init(&(pool->mutex), NULL);
     pthread_cond_init(&(pool->start), NULL);
@@ -199,7 +210,7 @@ void tpool_close(TPool *pool) {
     free(pool->workers);
     pthread_mutex_destroy(&(pool->mutex));
     pthread_cond_destroy(&(pool->start));
-    tga_close(pool->fptr);
+    jgr_close(pool->fptr);
     free(pool->rptr);
     free(pool);
 }
