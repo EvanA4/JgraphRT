@@ -3,10 +3,10 @@
 A minimalistic, multithreaded ray tracer written entirely in the C programming language. 
 
 Here's a GIF travelling close to a black hole.
-![A Really Cool Black Hole Pierce](https://github.com/EvanA4/C-Ray-Tracer/blob/main/pierce.gif?raw=true)
+![A Really Cool Black Hole Pierce](https://github.com/EvanA4/JgraphRT/blob/main/pierce.gif?raw=true)
 
 ...and here's another panning the side of it.
-![A Really Cool Black Hole Slide](https://github.com/EvanA4/C-Ray-Tracer/blob/main/slide.gif?raw=true)
+![A Really Cool Black Hole Slide](https://github.com/EvanA4/JgraphRT/blob/main/slide.gif?raw=true)
 
 To create the binary executable for the C ray tracer, just run `make` while in this repository's root directory. Running `bin/rayt` will give you information on how to run the program.
 
