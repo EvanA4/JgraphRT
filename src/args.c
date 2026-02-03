@@ -98,7 +98,7 @@ KerrArgs *parse_args(int argc, char **argv) {
     }
 
     int opt;
-    while((opt = getopt(argc - 1, argv + 1, "a:b:c:x:t:y:u:z:v:f:s:n:")) != -1)  
+    while((opt = getopt(argc - 1, argv + 1, "a:b:c:x:t:y:u:z:v:f:q:s:n:")) != -1)  
     {  
         switch(opt)  
         {
@@ -188,7 +188,7 @@ KerrArgs *parse_args(int argc, char **argv) {
                     free_args(out);
                     return NULL;
                 }
-                if (out->num_steps >= 0) {
+                if (out->num_steps <= 0) {
                     fprintf(stderr, "Error: invalid number of steps\n");
                     free_args(out);
                     return NULL;
